@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=`, initial-scale=1.0">
+    <title>PAGE NOT FOUND</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+
+<body>
+<div class="error">
+    <div class="errorContainer">
+        <div class="content">
+            <h3> <span> 404 </span> ERROR</h3>
+            <h2>PAGE NOT FOUND</h2>
+            <p>The page you are looking for does not exist.</p>
+            <div class="btnsContainer">
+                <button class="color" id="bckPrvPg"> Back</button>
+                <button id="bckHome">Home</button>
+                <button class="color mob">Back to homepage</button>
+            </div>
+        </div>
+        <div class="imgContainer">
+            <img src="./assets/imgs/404.svg" alt="PAGE NOT FOUND">
+        </div>
+    </div>
+</div>
+<script src="/assets/js/jquery.min.js"></script>
+<script>
+    $('#bckPrvPg').click(function(){
+        window.history.back();
+    })
+    $("#bckHome").click(function(){
+        window.location.href = "/login"
+    })
+</script>
+</body>
+</html>

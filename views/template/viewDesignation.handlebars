@@ -1,0 +1,151 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="csrf-token" content="{{csrfToken}}" />
+ <meta name="Content-Security-Policy" content="default-src 'self'; script-src-elem 'self' 'unsafe-inline' *; 
+         script-src 'self' *;
+         connect-src 'self' 'unsafe-inline' *;
+         style-src 'self'pro.fontawesome.com;  
+         style-src-elem 'self' *;
+         font-src 'self' 'unsafe-inline' pro.fontawesome.com;
+         img-src * ">
+  <title>{{title}}</title>
+  <link href="/assets/portalAsset/css/style.css" type="text/css" rel="stylesheet" />
+  <link rel="shortcut icon" type="image/x-icon" href="./assets/portalAsset/images/Favicon.ico" />
+  <link href="/assets/portalAsset/css/style.css" type="text/css" rel="stylesheet"/>
+  <link rel="shortcut icon" type="image/x-icon" href="./assets/portalAsset/images/Favicon.ico" />
+  <link href="/assets/portalAsset/css/style.css" type="text/css" rel="stylesheet" />
+  <link href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css" />
+  <link rel="stylesheet" href="./assets/portalAsset/css/datepicker.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous" />
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.min.css"
+        integrity="sha512-g2SduJKxa4Lbn3GW+Q7rNz+pKP9AWMR++Ta8fgwsZRCUsawjPvF/BxSMkGS61VsR9yinGoEgrHPGPn2mrj8+4w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+  <div class="container-fluid no-pad">
+    <div class="overall-Div">
+      {{>sideBar}}
+      <div class="content-div">
+        {{>adminHeader}}
+        <div class="addnewDiv"> <button class="addnew" id="addnewDeprt">Add New</button></div>
+        <div class="adminTable" id="designationTable">
+              <table class="table" id="designationTable">
+                  <thead>
+                  <tr>
+                  </tr>
+                  </thead>
+              </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div class="modal edituser" tabindex="-1" role="dialog" id="addDesgn">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content addNew_modal">
+      <div class="modal-header editModal_head">
+        <h5 class="edit_header ">Add Designation</h5>
+        <button type="button btn" id="addDesgnClose" class="edit_close addclose">Close</button>
+      </div>
+      <div class="modal-body">
+        <form name="editform" action="" id="addDesgnForm">
+          <div class="flexform">
+            <div class="selDepDesg AdInDiv">
+              <label for="">Department</label>
+              <select name="" class="selectpicker selectdropdown department AdIn" title="Select Department" id="department"></select>
+            </div>
+            <div>
+              <label for="">Designation</label>
+              <input type="text" class="caplet edit_input limitchar" id="new_Desgn" />
+            </div>
+          </div>
+          <button type="button" id="addSubmit" class="editsubmit">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+  {{!-- delete confirmation modal popup --}}
+<div class="modal" tabindex="-1" role="dialog" id="confirmdelete">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <img src="/assets/portalAsset/images/warning.png" class="warning" alt="warning" />
+        <div class="content_delete">
+          <h5>Are you sure?</h5>
+          <p>Are you sure you want delete <span class="desgnName"></span> </p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="confirm_DesgnNo" class="btn btn-secondary">Discard</button>
+        <button type="button" id="confirm_DesgnYes" class="btn btn-primary">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+{{!-- edit user data modal popup --}}
+<div class="modal edituser" tabindex="-1" role="dialog" id="editDesgnDtl">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content desgnEdit_modal">
+      <div class="modal-header editModal_head">
+        <h5 class="edit_header ">Edit Designation</h5>
+        <button type="button btn" id="edit_close" class="edit_close">Close</button>
+      </div>
+      <div class="modal-body">
+        <form name="editform" action="" id="editDesgnForm">
+          <div class="flexform">
+             <div class="selDepDesg AdInDiv">
+              <label for="">Department</label>
+              <select name="" class="selectpicker selectdropdown department AdIn" title="Select Department" id="edit_department"></select>
+            </div>
+            <div>
+              <label for="">Designation</label>
+              <input type="text" class="edit_input limitchar" id="edit_Desgn" />
+            </div>
+          </div>
+          <button type="button" id="edit_DesgnSubmit" class="editsubmit">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{!-- confirm edit user data modal popup --}}
+<div class="modal" tabindex="-1" role="dialog" id="confirmedit">
+  <div class="modal-dialog " role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <img src="/assets/portalAsset/images/warning.png" class="warning" alt="warning" />
+        <div class="content_delete">
+          <h5>Are you sure?</h5>
+          <p>Do you want to change ?</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="discard_DesgnEdit" class="btn btn-secondary">Discard</button>
+        <button type="button" id="confirm_DesgnEdit" class="btn btn-primary">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+  <script src="/assets/js/plugins/jquery.min.js"></script>
+  <script src="/js/viewDesignation.js"></script>
+  <script src="js/common.js"></script>
+  <script src="/js/customToast.js" type="text/javascript"></script>
+  <script src="/assets/js/plugins/bootstrap@5.1.3.bundle.min.js"></script>
+  <script src="/assets/js/plugins/bootstrap.select.min.js"></script>
+  <script src="/assets/js/plugins/bootstrap-notify.min.js"></script>
+  <script src="/assets/js/plugins/bootstrap.popper.js"></script>
+  <script src="/assets/js/plugins/dataTables.min.js"></script>
+  <script src="/assets/js/plugins/bootstrap.select.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,1109 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="csrf-token" content="{{csrfToken}}" />
+  <meta name="Content-Security-Policy" content="
+        default-src 'self' *; 
+        script-src 'self'*;
+        script-src-elem 'self' *; 
+        connect-src 'self' data: *;
+        style-src 'self' pro.fontawesome.com;  
+        style-src-elem 'self' *;
+        font-src 'self' 'unsafe-inline' pro.fontawesome.com;
+        img-src 'self' blob: data:; ">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{title}}</title>
+  <link rel="shortcut icon" type="image/x-icon" href="./assets/portalAsset/images/Favicon.ico" />
+  <link rel="stylesheet" href="./assets/portalAsset/css/bootstrap.min.css" type="text/css" />
+  <link rel="stylesheet" href="./assets/portalAsset/css/bootstrap-select.min.css" type="text/css" />
+  <link rel="stylesheet" href="./assets/portalAsset/css/datepicker.min.css" rel="stylesheet" />
+  <link href="/assets/portalAsset/css/style.css" type="text/css" rel="stylesheet" />
+  <link href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css" />
+  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+
+  {{!--
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" /> --}}
+  {{!--
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> --}}
+  {{!--
+  <script type="text/javascript" src="./assets/portalAsset/js/jquery-1.10.2.js"></script> --}}
+  {{!--
+  <script type="text/javascript" src="./assets/portalAsset/js/jquery.touchSwipe.js"></script>
+  <script type="text/javascript" src="./assets/portalAsset/js/jquery.horizonScroll.js"></script> --}}
+  {{!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous" /> --}}
+  {{!-- <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.min.css"
+    integrity="sha512-g2SduJKxa4Lbn3GW+Q7rNz+pKP9AWMR++Ta8fgwsZRCUsawjPvF/BxSMkGS61VsR9yinGoEgrHPGPn2mrj8+4w=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" /> --}}
+  {{!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/js/bootstrap-select.min.js"
+    integrity="sha512-yrOmjPdp8qH8hgLfWpSFhC/+R9Cj9USL8uJxYIveJZGAiedxyIxwNw4RsLDlcjNlIRR4kkHaDHSmNHAkxFTmgg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script> --}}
+  {{!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> --}}
+</head>
+
+<body>
+  <div class="container-fluid no-pad">
+    <div class="overall-Div viewDet">
+      {{>sideBar}}
+      <div class="content-div">
+        {{>adminHeader}}
+        <div class="adminTable" id="adminSaveDetailsTable">
+          <table class="table" id="adminSaveDetailsTable">
+            <thead>
+              <tr>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{!-- delete confirmation modal popup --}}
+  <div class="modal" tabindex="-1" role="dialog" id="confirmdelete">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <img src="/assets/portalAsset/images/warning.png" class="warning" alt="warning" />
+          <div class="content_delete">
+            <h5>Are you sure?</h5>
+            <p>Are you sure you want to delete this user</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="confirm_no" class="btn btn-secondary">Discard</button>
+          <button type="button" id="confirm_yes" class="btn btn-primary">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{!-- edit user data modal popup --}}
+  <div class="modal edituser" tabindex="-1" role="dialog" id="editViewDtl">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content viewDtl_modal">
+        <div class="modal-header editModal_head">
+          <h5 class="edit_header ">Edit User data</h5>
+          <button type="button btn" id="edit_close" class="edit_close">Close</button>
+        </div>
+        <div class="modal-body">
+          <form name="editform" action="" id="editform">
+            <div class="flexform">
+              <div>
+                <label for="">Full Name</label>
+                <input type="text" class="caplet edit_input texOnly limitchar" id="edit_name" maxlength="40" />
+              </div>
+              <div>
+                <label for="">Email Id</label>
+                <input type="text" class="edit_input" id="edit_email" />
+              </div>
+              <div>
+                <label for="">Date Of Joining</label>
+                <input type="text" class="datepicker edit_input" id="edit_doj" />
+              </div>
+              <div>
+                <label for="">Work Location</label>
+                <select class="selectpicker location edit_input" name="editlocation" title="Select Location"
+                  id="edit_location">
+
+                </select>
+              </div>
+            </div>
+            <div class="flexform justleft">
+              <div>
+                <label for="">Phone Number</label>
+                <input type="text" class="edit_input" id="edit_phno" maxlength="10" />
+              </div>
+              <div>
+                <label for="">Department</label>
+                <select class="selectpicker edit_input department" title="Select department" id="edit_department">
+
+                </select>
+              </div>
+              <div>
+                <label for="">Designation</label>
+                <select class="selectpicker edit_input edit_designation designation" title="Select designation"
+                  id="edit_designation">
+                </select>
+              </div>
+            </div>
+            <button type="button" id="edit_submit" class="editsubmit">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{!-- confirm edit user data modal popup --}}
+  <div class="modal" tabindex="-1" role="dialog" id="confirmedit">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <img src="/assets/portalAsset/images/warning.png" class="warning" alt="warning" />
+          <div class="content_delete">
+            <h5>Are you sure?</h5>
+            <p>Do you want to change this user details ?</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="discard_edit" class="btn btn-secondary">Discard</button>
+          <button type="button" id="confirm_edit" class="btn btn-primary">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Preview modal popup-->
+<div class="modal fade" id="viewModal"data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="Previousmodal"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+             <div class="modal-header viewModalHead">
+                <div class="viewModalTitle">
+                    <h3 class="modal-title ">Onboarding Employee Details</h3>
+                </div>
+                <div class="viewModalClose">
+                    <button type="button" class="close modalClose" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">x</span>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <!-- tab heading -->
+                <ul class="nav nav-pills">
+                    <li class="active"><a data-toggle="pill" href="#basictab">Basic Details</a></li>
+                    <li><a data-toggle="pill" href="#preferencetab">Design your Workspace</a></li>
+                    <li><a data-toggle="pill" href="#uploadtab">Upload documents</a></li>
+                    <li><a data-toggle="pill" href="#educationtab">Education & Work Experience</a></li>
+                    <li><a data-toggle="pill" href="#insurancetab">Insurance & Medical status</a></li>
+                    <li><a data-toggle="pill" href="#pastTimetab">Past Time</a></li>
+                    {{!-- <button class="modalClose edit_close" data-backdrop="static" data-keyboard="false">Close</button> --}}
+                </ul>
+                <!-- tab content -->
+                <div class="tab-content">
+                    <div id="basictab" class="tab-pane fade in active">
+                        <ul class="preview-ul">
+                            <li>
+                                <span>Personal Details</span>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>First Name</label>
+                                        <span id="viewFname">Sathish</span>
+                                    </div>
+                                    <div>
+                                        <label>Last Name</label>
+                                        <span id="viewLname">Kumar</span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Date of birth</label>
+                                        <span id="viewDob">DD/MM/YYYY</span>
+                                    </div>
+                                    <div>
+                                        <label>Nationality</label>
+                                        <span id="viewNationality">India</span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Gender</label>
+                                        <span id="viewGender">Male</span>
+                                    </div>
+                                    <div>
+                                        <label>Mobile Number</label>
+                                        <span id="viewMobileNo">+91 1234567890</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Marital Status</label>
+                                        <span id="viewMaritalSts">Single</span>
+                                    </div>
+                                    <div class="annv-content" style="display:none;">
+                                        <label>Anniversary Date</label>
+                                        <span id="viewAnnvDate">01-01-2022</span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Personal Email-ID</label>
+                                        <span id="viewPersMail">test@gmail.com</span>
+                                    </div>
+                                    <div>
+                                        <label>LinkedIn Profile</label>
+                                        <span id="viewLnkd">test@linkedin</span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Alternate Number</label>
+                                        <span id="viewAltMobileNo">+91 1234567890</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <!-- communication address -->
+                            <li>
+                                <span>Communication Address</span>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Pincode</label>
+                                        <span id="viewComPin">600061</span>
+                                    </div>
+                                    <div>
+                                        <label>Country</label>
+                                        <span id="viewComCountry">India</span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>State / Province</label>
+                                        <span id="viewComState">Tamilnadu</span>
+                                    </div>
+                                    <div>
+                                        <label>Taluk / District</label>
+                                        <span id="viewComDist">Chennai</span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>City</label>
+                                        <span id="viewComCity">Chennai</span>
+                                    </div>
+                                    <div>
+                                        <label>Area / Locality</label>
+                                        <span id="viewComArea">Alandur</span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Street Name</label>
+                                        <span id="viewComStr">Alandur</span>
+                                    </div>
+                                    <div>
+                                        <label>Door Number</label>
+                                        <span id="viewComDoor">No.1</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <!-- permanent address -->
+                            <li>
+                                <span>Permanant Address</span>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Pincode</label>
+                                        <span id="viewPerPin">600001</span>
+                                    </div>
+                                    <div>
+                                        <label>Country</label>
+                                        <span id="viewPerCountry">India</span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>State / Province</label>
+                                        <span id="viewPerState">Tamilnadu</span>
+                                    </div>
+                                    <div>
+                                        <label>Taluk / District</label>
+                                        <span id="viewPerDist">Chennai</span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>City</label>
+                                        <span id="viewPerCity">Chennai</span>
+                                    </div>
+                                    <div>
+                                        <label>Area / Locality</label>
+                                        <span id="viewPerArea">Alandur</span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Street Name</label>
+                                        <span id="viewPerStr">Alandur</span>
+                                    </div>
+                                    <div>
+                                        <label>Door Number</label>
+                                        <span id="viewPerDoor">No.1</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <!-- bank details -->
+                            <li>
+                                <span>Bank Account Details</span>
+                                <div class="personvalues viewBnkChk">
+                                    <div>
+                                        <label>Account Details </label>
+                                        <span id="viewCrtAcc">*Create New salary account*</span>
+                                    </div>
+                                </div>
+                                <div class="personvalues viewBnk">
+                                    <div>
+                                        <label>Name as per bank account</label>
+                                        <span id="viewBnkperName">Sathish</span>
+                                    </div>
+                                    <div>
+                                        <label>Account number</label>
+                                        <span id="viewBnkNum">123456789</span>
+                                    </div>
+                                </div>
+                                <div class="personvalues viewBnk">
+                                    <div>
+                                        <label>IFSC number</label>
+                                        <span id="viewIfscNum">123456789</span>
+                                    </div>
+                                    <div>
+                                        <label>Bank Name</label>
+                                        <span id="viewBnkName">Bank Name</span>
+                                    </div>
+                                </div>
+                                <div class="personvalues viewBnk">
+                                    <div>
+                                        <label>Branch</label>
+                                        <span id="viewBnkBranch">Alandur</span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- preference tab -->
+                    <div id="preferencetab" class="tab-pane fade">
+                        <ul class="preview-ul">
+                            <li>
+                                <span>Your Preference</span>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Preferred official email</label>
+                                        <span id="viewOffMail">Sathish.K@m2pfintech.com</span>
+                                    </div>
+                                    <div>
+                                        <label>Preferred joining date</label>
+                                        <span id="viewDoj">DD/MM/YYYY</span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Preferred laptop</label>
+                                        <span id="viewLaptp">Windows</span>
+                                    </div>
+                                    <div>
+                                        <label>Accessories you prefer</label>
+                                        <span id="viewAcces">Monitor</span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Pick Your Bag Style</label>
+                                        <span id="viewBag">Red-Briefcase</span>
+                                    </div>
+                                    <div>
+                                        <label>Pick Your bottle</label>
+                                        <span id="viewBottle">Red-Bottle</span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Select T-Shirt&Size</label>
+                                        <span id="viewTshirt">Red-Tshirt</span>
+                                    </div>
+                                    <div>
+                                        <label>Pick your choice of read</label>
+                                        <span id="viewBooks"> Books </span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Scribble Notebooks</label>
+                                        <span id="viewScrib">Red-Noteook</span>
+                                    </div>
+                                    <div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div id="uploadtab" class="tab-pane fade">
+                        <ul class="preview-ul">
+                            <li>
+                                <span>Upload Your Picture</span>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Casual Picture</label>
+                                        <span id="viewCasPic">
+                                            <div class="view_pic">
+                                                <img src="/assets/portalAsset/images/pdf_img.png" class="hide pdf" alt="preview image modal" />
+                                                <img src="/assets/portalAsset/images/casualPic.png" id="" name="casualPic" class="preview_img_modal" alt="preview image modal" />
+                                                <div class="download">
+                                                    <img src="/assets/portalAsset/images/download_pic.svg" alt="download pic" />
+                                                </div>
+                                            </div>
+                                        </span>
+                                    </div>
+                                    <div class="casPic2">
+                                        <label>Casual Picture</label>
+                                        <span id="viewCasPic2">
+                                            <div class="view_pic">
+                                                <img src="/assets/portalAsset/images/pdf_img.png" class="hide pdf" alt="preview image modal" />
+                                                <img src="/assets/portalAsset/images/casualPic.png" id="" name="casualPic2" class="preview_img_modal" alt="preview image modal" />
+                                                <div class="download">
+                                                    <img src="/assets/portalAsset/images/download_pic.svg" alt="download pic" />
+                                                </div>
+                                            </div>                                       
+                                        </span>
+                                    </div>
+                                    <div>
+
+                                    </div>
+                                </div>
+                            </li>
+                            <!-- PAN Card -->
+                            <li>
+                                <span>PAN Card</span>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Enter PAN number</label>
+                                        <span id="viewPanNum">1232435464</span>
+                                    </div>
+                                    <div>
+                                        <label>PAN front side</label>
+                                        <span id="viewPanPic">
+                                            <div class="view_pic">
+                                                <img src="/assets/portalAsset/images/pdf_img.png" class="hide pdf" alt="preview image modal" />
+                                                <img src="/assets/portalAsset/images/casualPic.png" id="" name="panFront" class="preview_img_modal" alt="preview image modal" />
+                                                <div class="download">
+                                                    <img src="/assets/portalAsset/images/download_pic.svg" alt="download pic" />
+                                                </div>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                            </li>
+                            <!-- Aadhar Card -->
+                            <li>
+                                <span>Aadhar Card</span>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Enter Aadhar number</label>
+                                        <span id="viewAadNum">1234567890</span>
+                                    </div>
+                                    <div>
+                                        <label>Aadhar front side</label>
+                                        <span id="viewAadFrnt">
+                                            <div class="view_pic">
+                                                <img src="/assets/portalAsset/images/pdf_img.png" class="hide pdf" alt="preview image modal" />
+                                                <img src="/assets/portalAsset/images/casualPic.png" id="" name="aadharFront" class="preview_img_modal" alt="preview image modal" />
+                                                <div class="download">
+                                                    <img src="/assets/portalAsset/images/download_pic.svg" alt="download pic" />
+                                                </div>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Aadhar back side</label>
+                                        <span id="viewAadBck">
+                                            <div class="view_pic">
+                                                <img src="/assets/portalAsset/images/pdf_img.png" class="hide pdf" alt="preview image modal" />
+                                                <img src="/assets/portalAsset/images/casualPic.png" id="" name="aadharBack" class="preview_img_modal" alt="preview image modal" />
+                                                <div class="download">
+                                                    <img src="/assets/portalAsset/images/download_pic.svg" alt="download pic" />
+                                                </div>
+                                            </div>
+                                        </span>
+                                    </div>
+                                    <div>
+                                    </div>
+                                </div>
+                            </li>
+                            <!-- Address Proof -->
+                            <li>
+                                <span>Address Proof</span>
+                                <div class="personvalues aadChk">
+                                    <div>
+                                        <label>Address Proof</label>
+                                        <span id="addProof">*Same as Aadhar Card*</span>
+                                    </div>
+                                </div>
+                                <div class="personvalues driveChk">
+                                    <div>
+                                        <label>Driving-License number</label>
+                                        <span id="viewLiceNo"></span>
+                                    </div>
+                                    <div>
+                                        <label>Driving-License front side</label>
+                                        <span id="viewLiceFrnt">
+                                            <div class="view_pic">
+                                                <img src="/assets/portalAsset/images/pdf_img.png" class="hide pdf" alt="preview image modal" />
+                                                <img src="/assets/portalAsset/images/casualPic.png" id="" name="licenseFront" class="preview_img_modal" alt="preview image modal" />
+                                                <div class="download">
+                                                    <img src="/assets/portalAsset/images/download_pic.svg" alt="download pic" />
+                                                </div>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="personvalues driveChk">
+                                    <div>
+                                        <label>Driving-License back side</label>
+                                        <span id="viewLiceBck">
+                                           <div class="view_pic">
+                                                <img src="/assets/portalAsset/images/pdf_img.png" class="hide pdf" alt="preview image modal" />
+                                                <img src="/assets/portalAsset/images/casualPic.png" id="" name="licenseBack" class="preview_img_modal" alt="preview image modal" />
+                                                <div class="download">
+                                                    <img src="/assets/portalAsset/images/download_pic.svg" alt="download pic" />
+                                                </div>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="personvalues voterChk">
+                                    <div>
+                                        <label>Voter ID number</label>
+                                        <span id="viewVoterNo"></span>
+                                    </div>
+                                    <div>
+                                        <label>Voter ID front side</label>
+                                        <span id="viewVoterFrnt">
+                                            <div class="view_pic">
+                                                <img src="/assets/portalAsset/images/pdf_img.png" class="hide pdf" alt="preview image modal" />
+                                                <img src="/assets/portalAsset/images/casualPic.png" id="" name="voterFront" class="preview_img_modal" alt="preview image modal" />
+                                                <div class="download">
+                                                    <img src="/assets/portalAsset/images/download_pic.svg" alt="download pic" />
+                                                </div>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="personvalues voterChk">
+                                    <div>
+                                        <label>Voter ID back side</label>
+                                        <span id="viewVoterBck">
+                                            <div class="view_pic">
+                                                <img src="/assets/portalAsset/images/pdf_img.png" class="hide pdf" alt="preview image modal" />
+                                                <img src="/assets/portalAsset/images/casualPic.png" id="" name="voterBack" class="preview_img_modal" alt="preview image modal" />
+                                                <div class="download">
+                                                    <img src="/assets/portalAsset/images/download_pic.svg" alt="download pic" />
+                                                </div>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                            </li>
+                            <!-- Passport details -->
+                            <li class="viewPass-content">
+                                <span>Passport (optional)</span>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Passport Number</label>
+                                        <span id="viewPassNum"></span>
+                                    </div>
+                                    <div>
+                                        <label>Expiry Date</label>
+                                        <span id="viewPassExp"></span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Passport Front Page</label>
+                                        <span id="viewPassFrnt">
+                                            <div class="view_pic">
+                                                <img src="/assets/portalAsset/images/pdf_img.png" class="hide pdf" alt="preview image modal" />
+                                                <img src="/assets/portalAsset/images/casualPic.png" id="" name="passportFront" class="preview_img_modal" alt="preview image modal" />
+                                                <div class="download">
+                                                    <img src="/assets/portalAsset/images/download_pic.svg" alt="download pic" />
+                                                </div>
+                                            </div>
+                                        </span>
+                                    </div>
+                                    <div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div id="educationtab" class="tab-pane fade">
+                        <ul class="preview-ul">
+                            <li class="edu">
+                                <span>Education</span>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Highest level education</label>
+                                        <span id="viewEdu"></span>
+                                    </div>
+                                    <div>
+                                        <label>Field of study</label>
+                                        <span id="viewField"></span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Year of completion</label>
+                                        <span id="viewYrComp"></span>
+                                    </div>
+                                    <div>
+                                        <label>Upload Certificate*</label>
+                                        <span id="viewEduCert">
+                                            <div class="view_pic">
+                                                <img src="/assets/portalAsset/images/pdf_img.png" class="hide pdf" alt="preview image modal" />
+                                                <img src="/assets/portalAsset/images/casualPic.png" id="" name="eduCertificate1" class="preview_img_modal" alt="preview image modal" />
+                                                <div class="download">
+                                                    <img src="/assets/portalAsset/images/download_pic.svg" alt="download pic" />
+                                                </div>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="edu2">
+                                <span>Education</span>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Intermediate level education</label>
+                                        <span id="viewEdu2"></span>
+                                    </div>
+                                    <div>
+                                        <label>Field of study</label>
+                                        <span id="viewField2"></span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Year of completion</label>
+                                        <span id="viewYrComp2"></span>
+                                    </div>
+                                    <div>
+                                        <label>Upload Certificate*</label>
+                                        <span id="viewEduCert2">
+                                            <div class="view_pic">
+                                                <img src="/assets/portalAsset/images/pdf_img.png" class="hide pdf" alt="preview image modal" />
+                                                <img src="/assets/portalAsset/images/casualPic.png" id="" name="eduCertificate2" class="preview_img_modal" alt="preview image modal" />
+                                                <div class="download">
+                                                    <img src="/assets/portalAsset/images/download_pic.svg" alt="download pic" />
+                                                </div>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="edu3">
+                                <span>Education</span>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Intermediate level education</label>
+                                        <span id="viewEdu3"></span>
+                                    </div>
+                                    <div>
+                                        <label>Field of study</label>
+                                        <span id="viewField3"></span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Year of completion</label>
+                                        <span id="viewYrComp3"></span>
+                                    </div>
+                                    <div>
+                                        <label>Upload Certificate*</label>
+                                        <span id="viewEduCert3">
+                                            <div class="view_pic">
+                                                <img src="/assets/portalAsset/images/pdf_img.png" class="hide pdf" alt="preview image modal" />
+                                                <img src="/assets/portalAsset/images/casualPic.png" id="" name="eduCertificate3" class="preview_img_modal" alt="preview image modal" />
+                                                <div class="download">
+                                                    <img src="/assets/portalAsset/images/download_pic.svg" alt="download pic" />
+                                                </div>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                            </li>
+                            <!-- Certification -->
+                            <li class="viewCertif-content">
+                                <span>Certification (optional)</span>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Highest level education</label>
+                                        <span id="viewCertEdu"></span>
+                                    </div>
+                                    <div>
+                                        <label>Field of study</label>
+                                        <span id="viewCertField"></span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Year of completion</label>
+                                        <span id="viewCertYr"></span>
+                                    </div>
+                                    <div>
+                                        <label>Upload Certificate*</label>
+                                        <span id="viewCertUp">
+                                            <div class="view_pic">
+                                                <img src="/assets/portalAsset/images/pdf_img.png" class="hide pdf" alt="preview image modal" />
+                                                <img src="/assets/portalAsset/images/casualPic.png" id="" name="certificationDoc" class="preview_img_modal" alt="preview image modal" />
+                                                <div class="download">
+                                                    <img src="/assets/portalAsset/images/download_pic.svg" alt="download pic" />
+                                                </div>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                            </li>
+                            <!-- Work Experience -->
+                            <li class="wrkExpSts"> 
+                                <span>Work Experience</span>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Do you have work experience?</label>
+                                        <span id="viewWrkExp">-</span>
+                                    </div>
+                                    <div>
+
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="expWorking">
+                                <span>Work Experience</span>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Status</label>
+                                        <span id="viewWrkSts"></span>
+                                    </div>
+                                    <div>
+                                        <label>Employee Name</label>
+                                        <span id="viewWrkEmpName"></span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Position</label>
+                                        <span id="viewWrkPost"></span>
+                                    </div>
+                                    <div>
+                                        <label>Date of Joining</label>
+                                        <span id="viewWrkDoj"></span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="expRelieved">
+                                <span>Work Experience</span>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Status</label>
+                                        <span id="viewRelSts"></span>
+                                    </div>
+                                     <div class="uanNum" style="display:none ;">
+                                        <label>UAN Number</label>
+                                        <span id="viewRelUan"></span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div class="viewRelDoc">
+                                        <label>Relieving Letter</label>
+                                        <span id="viewRelDoc">
+                                            <div class="view_pic">
+                                                <img src="/assets/portalAsset/images/pdf_img.png" class="hide pdf" alt="preview image modal" />
+                                                <img src="/assets/portalAsset/images/casualPic.png" id="" name="workRelieve" class="preview_img_modal" alt="preview image modal" />
+                                                <div class="download">
+                                                    <img src="/assets/portalAsset/images/download_pic.svg" alt="download pic" />
+                                                </div>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4>Experience-1</h4>
+                                    <div class="personvalues">
+                                        <div>
+                                            <label>Organisation Name</label>
+                                            <span id="viewRelEmpName"></span>
+                                        </div>
+                                        <div>
+                                            <label>Position</label>
+                                            <span id="viewRelPost"></span>
+                                        </div>
+                                       
+                                    </div>
+                                    <div class="personvalues">
+                                        <div>
+                                            <label>Date of Joining</label>
+                                            <span id="viewRelDoj"></span>
+                                        </div>
+                                        <div>
+                                            <label>Date of Relieve</label>
+                                            <span id="viewRelDoR"></span>
+                                        </div>
+                                    </div>
+                                    <div class="personvalues">
+                                        <div>
+                                            <label>Total Experience</label>
+                                            <span id="viewRelExp"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="viewNewExp" style="display:none;">
+                                    <h4></h4>
+                                    <div class="personvalues">
+                                         <div>
+                                            <label>Organisation Name</label>
+                                            <span id="viewRelEmpName"></span>
+                                        </div>
+                                        <div>
+                                            <label>Position</label>
+                                            <span id="viewRelPost"></span>
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="personvalues">
+                                        <div>
+                                            <label>Date of Joining</label>
+                                            <span id="viewRelDoj"></span>
+                                        </div>
+                                        <div>
+                                            <label>Date of Relieve</label>
+                                            <span id="viewRelDoR"></span>
+                                        </div>
+                                    </div>
+                                    <div class="personvalues">
+                                        <div>
+                                            <label>Total Experience</label>
+                                            <span id="viewRelExp"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="cloneNewExp"></div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div id="insurancetab" class="tab-pane fade">
+                        <ul class="preview-ul">
+                            <li>
+                                <span>Medical Insurance Details </span>
+                                <h4>Nominee-1</h4>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Name</label>
+                                        <span id="viewInsurName"></span>
+                                    </div>
+                                    <div>
+                                        <label>Relationship</label>
+                                        <span id="viewInsurRel"></span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Date of birth</label>
+                                        <span id="viewInsurDob"></span>
+                                    </div>
+                                </div>
+                                <div class="viewMedInsur" style="display:none;">
+                                    <h4>Nominee</h4>
+                                    <div class="personvalues">
+                                        <div>
+                                            <label>Name</label>
+                                            <span id="viewInsurName"></span>
+                                        </div>
+                                        <div>
+                                            <label>Relationship</label>
+                                            <span id="viewInsurRel"></span>
+                                        </div>
+                                    </div>
+                                    <div class="personvalues">
+                                        <div>
+                                            <label>Date of birth</label>
+                                            <span id="viewInsurDob"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="cloneNewInsur"></div>
+                            </li>
+                            <!-- VACCINATION STATUS -->
+                            <li>
+                                <span>Medical Status</span>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Blood group</label>
+                                        <span id="viewBg"></span>
+                                    </div>
+                                    <div>
+                                        <label>Covid vaccination status</label>
+                                        <span id="viewVaccSts"></span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div class="vaccDose1">
+                                        <label>First Dose date</label>
+                                        <span id="viewDose1Date"></span>
+                                    </div>
+                                    <div class="vaccDose2">
+                                        <label>Second Dose date</label>
+                                        <span id="viewDose2Date"></span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div class="vaccReason">
+                                        <label>Reaason</label>
+                                        <span id="viewVaccRes"></span>
+                                    </div>
+                                    <div class="vaccCerti">
+                                        <label>Upload Certificate*</label>
+                                        <span id="viewVaccCert">
+                                            <div class="view_pic">
+                                                <img src="/assets/portalAsset/images/pdf_img.png" class="hide pdf" alt="preview image modal" />
+                                                <img src="/assets/portalAsset/images/casualPic.png" id="" name="vaccineCertificate" class="preview_img_modal" alt="preview image modal" />
+                                                <div class="download">
+                                                    <img src="/assets/portalAsset/images/download_pic.svg" alt="download pic" />
+                                                </div>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                            </li>
+                            <!-- Work Experience -->
+                            <li>
+                                <span>Emergency Contact Details</span>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Contact person 1 name</label>
+                                        <span id="viewEmrName1">Yes</span>
+                                    </div>
+                                    <div>
+                                        <label>Contact person 2 name</label>
+                                        <span id="viewEmrName2">Yes</span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Relationship</label>
+                                        <span id="viewEmrRel1">Yes</span>
+                                    </div>
+                                    <div>
+                                        <label>Relationship</label>
+                                        <span id="viewEmrRel2">Yes</span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Contact number</label>
+                                        <span id="viewEmrCnt1">Yes</span>
+                                    </div>
+                                    <div>
+                                        <label>Contact number</label>
+                                        <span id="viewEmrCnt2">Yes</span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div id="pastTimetab" class="tab-pane fade">
+                        <ul class="preview-ul">
+                            <li>
+                                <span>Hobbies</span>
+                                <div class="personvalues">
+                                    <div>
+                                        <span id="viewHobbies"></span>
+                                    </div>
+                                </div>
+                            </li>
+                            <!-- VACCINATION STATUS -->
+                            <li>
+                                <span>Favourites</span>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Favorite Book</label>
+                                        <span id="viewFavBook"></span>
+                                    </div>
+                                    <div>
+                                        <label>Favorite Movie</label>
+                                        <span id="viewFavMovie"></span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Favorite Travel destination </label>
+                                        <span id="viewFavTravel"></span>
+                                    </div>
+                                    <div>
+                                        <label>Favorite Food / Cuisine</label>
+                                        <span id="viewfavFood"></span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Favorite Sport & Team </label>
+                                        <span id="viewFavSports"></span>
+                                    </div>
+                                </div>
+                            </li>
+                            <!-- Work Experience -->
+                            <li>
+                                <span>Goals</span>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Mantra's</label>
+                                        <span id="viewMantra">Yes</span>
+                                    </div>
+                                </div>
+                                <div class="personvalues">
+                                    <div>
+                                        <label>Top Bucket-List</label>
+                                        <span id="viewBuckList">Yes</span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                {{!-- <div class="bg-gray">
+                    <!-- <input type="button" name="next" id="basic-details" class="next " value="Next"> -->
+                    <a href="#" class="action-button btn btn-secondary" data-dismiss="modal">Edit</a>
+                    <!-- <button type="button" class="btn btn-secondary continue-modal" data-dismiss="modal">Edit</button> -->
+                </div> --}}
+            </div>
+        </div>
+    </div>
+</div>
+{{!-- Fetch model --}}
+<div class="modal fade" id="fetchModal" data-backdrop="static" data-keyboard="false" tabindex="-1" tabindex="-1" role="dialog" aria-labelledby="welcomepopupTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-wel modal-upl">
+                    <div>
+                        <img src="./assets/portalAsset/images/95241-uploading3.gif" alt="" />
+                    </div>
+                    <div class="flex-welcome">
+                        <h4 id="userId"></h4>
+                        <p class="welcometextp">
+                            <b>Retrieving files... </b>
+                        </p>
+                        <p class="welcome-p">
+                            Please wait...
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+  <script src="./assets/portalAsset/js/jquery.min.js"></script>
+  <script src="./assets/portalAsset/js/bootstrap.min.js"></script>
+  <script src="./assets/portalAsset/js/bootstrap-select.min.js"></script>
+  <script src="/js/viewDetail.js"></script>
+  <script src="/assets/js/plugins/bootstrap-notify.min.js"></script>
+  <script src="./assets/portalAsset/js/datepicker.min.js"></script>
+  <script src="./assets/portalAsset/js/jquery.inputmask.bundle.min.js"></script>
+  <script src="/assets/js/plugins/dataTables.min.js"></script>
+  <script src="js/common.js"></script>
+  <script src="/assets/portalAsset/js/moment.min.js"></script>
+  <script src="/js/customToast.js" type="text/javascript"></script>
+  <script src="/assets/js/plugins/FileSaver.min.js"></script>
+</body>
+
+</html>
